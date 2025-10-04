@@ -1,59 +1,231 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Stromkosten-Rechner</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>eco-rechner.de — Stromkosten-Rechner (privat & lokal)</title>
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;max-width:750px;margin:30px auto;padding:0 12px;}
-    label{display:block;margin:8px 0;}
-    input{padding:6px;margin-left:6px;}
-    button{padding:8px 12px;margin-top:10px;cursor:pointer;}
-    .card{border:1px solid #ddd;padding:12px;border-radius:8px;margin-top:12px}
+    body{font-family:Arial,Helvetica,sans-serif;max-width:900px;margin:28px auto;padding:0 14px;color:#111}
+    header{display:flex;align-items:center;gap:12px}
+    h1{margin:0;font-size:22px}
+    .badge{background:#e6f7ea;color:#065f46;padding:6px 10px;border-radius:8px;font-size:13px}
+    .card{border:1px solid #e6e6e6;padding:14px;border-radius:10px;margin-top:14px}
+    label{display:block;margin:8px 0;font-weight:600}
+    input[type=number], input[type=text], select{padding:7px;width:100%;box-sizing:border-box;border:1px solid #ccc;border-radius:6px}
+    button{padding:8px 12px;border-radius:8px;border:0;background:#0366d6;color:#fff;cursor:pointer}
+    .muted{color:#666;font-size:14px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    td,th{padding:6px;border-bottom:1px solid #f0f0f0;text-align:left}
+    .small{font-size:13px;color:#555}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    footer{text-align:center;margin:22px 0;color:#666;font-size:13px}
   </style>
 </head>
 <body>
-  <h1>💡 Stromkosten-Rechner</h1>
-  <p>Berechne deine jährlichen Stromkosten und entdecke, wie viel du sparen kannst!</p>
+  <header>
+    <div>
+      <h1>eco-rechner.de</h1>
+      <div class="muted">Stromkosten schnell berechnen — <span class="badge">Datenschutz-freundlich</span></div>
+    </div>
+  </header>
 
-  <form id="calcForm" class="card">
-    <label>Monatlicher Stromverbrauch (kWh):
-      <input id="kwh" type="number" value="300" min="0" required>
-    </label>
-    <label>Preis pro kWh (€):
-      <input id="price" type="number" step="0.01" value="0.40" min="0" required>
-    </label>
-    <button type="submit">Berechnen</button>
-  </form>
+  <div class="card">
+    <label>Modus</label>
+    <select id="mode">
+      <option value="annual">Jährlicher Verbrauch (kWh)</option>
+      <option value="devices">Geräte-Liste (Watt, Std/Tag)</option>
+    </select>
 
-  <div id="result" class="card" style="display:none"></div>
+    <div id="annualBlock" style="margin-top:10px;">
+      <label>Jährlicher Verbrauch (kWh)</label>
+      <input id="annualKwh" type="number" min="0" step="1" placeholder="z. B. 3600" value="3600">
+    </div>
+
+    <div id="devicesBlock" style="display:none;margin-top:10px;">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <label style="flex:1">Geräte hinzufügen</label>
+        <button id="addDeviceBtn" type="button">+ Gerät</button>
+      </div>
+      <div id="devicesList" style="margin-top:8px"></div>
+      <div class="small muted">Trage Watt-Leistung und geschätzte Betriebsstunden pro Tag ein. (Keine Speicherung)</div>
+    </div>
+
+    <label style="margin-top:10px">Preis pro kWh (€)</label>
+    <input id="price" type="number" step="0.01" min="0" value="0.40">
+
+    <div class="actions">
+      <button id="calcBtn" type="button">Berechnen</button>
+      <button id="downloadBtn" type="button">Report herunterladen</button>
+    </div>
+
+    <div id="result" style="display:none;margin-top:12px"></div>
+
+    <div style="margin-top:12px" class="small">
+      <strong>Datenschutz:</strong> Es werden keine Daten an Server gesendet, nichts gespeichert und kein Tracking eingesetzt. Der heruntergeladene Report wird lokal auf deinem Gerät erstellt.
+    </div>
+  </div>
 
   <script>
-    function calcAnnualCost(monthlyKwh, pricePerKwh){
-      return monthlyKwh * 12 * pricePerKwh;
+    // ---- Utility / Privacy: NO network calls anywhere ----
+
+    const modeEl = document.getElementById('mode');
+    const annualBlock = document.getElementById('annualBlock');
+    const devicesBlock = document.getElementById('devicesBlock');
+    const devicesList = document.getElementById('devicesList');
+    const addDeviceBtn = document.getElementById('addDeviceBtn');
+    const calcBtn = document.getElementById('calcBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resultDiv = document.getElementById('result');
+
+    function toggleMode(){
+      if(modeEl.value === 'annual'){
+        annualBlock.style.display = '';
+        devicesBlock.style.display = 'none';
+      } else {
+        annualBlock.style.display = 'none';
+        devicesBlock.style.display = '';
+      }
     }
-    function estimateDeviceReplacementSavings(currentWatt, newWatt, hoursPerDay, pricePerKwh){
-      const days = 365;
-      const kwhOld = (currentWatt/1000) * hoursPerDay * days;
-      const kwhNew = (newWatt/1000) * hoursPerDay * days;
-      return (kwhOld - kwhNew) * pricePerKwh;
+    modeEl.addEventListener('change', toggleMode);
+
+    // Create a device row
+    function createDeviceRow(name='', watt=10, hours=1){
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'grid';
+      wrapper.style.gridTemplateColumns = '1fr 110px 110px 60px';
+      wrapper.style.gap = '8px';
+      wrapper.style.marginTop = '6px';
+
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.placeholder = 'Gerätename (z.B. Kühlschrank)';
+      nameInput.value = name;
+
+      const wattInput = document.createElement('input');
+      wattInput.type = 'number';
+      wattInput.min = '0';
+      wattInput.step = '1';
+      wattInput.value = watt;
+
+      const hoursInput = document.createElement('input');
+      hoursInput.type = 'number';
+      hoursInput.min = '0';
+      hoursInput.step = '0.1';
+      hoursInput.value = hours;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.textContent = '✕';
+      removeBtn.style.background = '#ff4d4d';
+      removeBtn.style.border = 'none';
+      removeBtn.style.color = '#fff';
+      removeBtn.style.borderRadius = '6px';
+      removeBtn.addEventListener('click', () => wrapper.remove());
+
+      wrapper.appendChild(nameInput);
+      wrapper.appendChild(wattInput);
+      wrapper.appendChild(hoursInput);
+      wrapper.appendChild(removeBtn);
+      devicesList.appendChild(wrapper);
+
+      return wrapper;
     }
 
-    document.getElementById('calcForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const kwh = parseFloat(document.getElementById('kwh').value) || 0;
-      const price = parseFloat(document.getElementById('price').value) || 0;
-      const annual = calcAnnualCost(kwh, price);
-      const savingExample = estimateDeviceReplacementSavings(60, 8, 3, price);
-      const resultEl = document.getElementById('result');
-      resultEl.style.display = 'block';
-      resultEl.innerHTML = `
-        <h3>Ergebnis</h3>
-        <p>Deine jährlichen Stromkosten: <strong>€ ${annual.toFixed(2)}</strong></p>
-        <p>Beispiel: Eine 60W-Lampe, 3h/Tag → LED 8W: spart ca. <strong>€ ${savingExample.toFixed(2)}</strong>/Jahr.</p>
-        <p><a href="#" onclick="alert('Hier später Affiliate-Link zu LEDs einfügen')">👉 Jetzt energiesparende LEDs ansehen</a></p>
-      `;
+    addDeviceBtn.addEventListener('click', () => {
+      createDeviceRow('Neues Gerät', 100, 1);
     });
+
+    // Pre-add a common appliance example to help users
+    createDeviceRow('60W Lampe', 60, 3);
+    createDeviceRow('PC (Last)', 200, 5);
+
+    function computeFromDevices(price){
+      const rows = Array.from(devicesList.children);
+      let totalKwh = 0;
+      const details = [];
+      rows.forEach(row => {
+        const name = row.children[0].value || 'Gerät';
+        const watt = parseFloat(row.children[1].value) || 0;
+        const hours = parseFloat(row.children[2].value) || 0;
+        const kwh = (watt/1000) * hours * 365;
+        totalKwh += kwh;
+        details.push({name, watt, hours, kwh});
+      });
+      const cost = totalKwh * price;
+      return {totalKwh, cost, details};
+    }
+
+    function computeFromAnnual(annualKwh, price){
+      const totalKwh = parseFloat(annualKwh) || 0;
+      const cost = totalKwh * price;
+      return {totalKwh, cost, details: []};
+    }
+
+    calcBtn.addEventListener('click', () => {
+      const price = parseFloat(document.getElementById('price').value) || 0;
+      let res;
+      if(modeEl.value === 'annual'){
+        const annualKwh = document.getElementById('annualKwh').value;
+        res = computeFromAnnual(annualKwh, price);
+      } else {
+        res = computeFromDevices(price);
+      }
+      showResult(res);
+    });
+
+    function showResult(res){
+      resultDiv.style.display = 'block';
+      const euro = (val) => '€ ' + val.toFixed(2);
+      let html = '<h3>Ergebnis</h3>';
+      html += `<p>Jährlicher Verbrauch: <strong>${res.totalKwh.toFixed(0)} kWh</strong></p>`;
+      html += `<p>Jährliche Stromkosten: <strong>${euro(res.cost)}</strong></p>`;
+      if(res.details && res.details.length){
+        html += '<h4>Geräte-Aufschlüsselung</h4><table><tr><th>Gerät</th><th>Watt</th><th>Std/Tag</th><th>kWh/Jahr</th></tr>';
+        res.details.forEach(d => {
+          html += `<tr><td>${escapeHtml(d.name)}</td><td>${d.watt}</td><td>${d.hours}</td><td>${d.kwh.toFixed(1)}</td></tr>`;
+        });
+        html += '</table>';
+      }
+      html += `<div style="margin-top:8px" class="small muted">Hinweis: Diese Berechnung läuft lokal in deinem Browser. Es werden keine Daten gesendet oder gespeichert.</div>`;
+      resultDiv.innerHTML = html;
+      // store last result in memory (not persisted)
+      window._lastCalc = res;
+    }
+
+    // download a text report (local only)
+    downloadBtn.addEventListener('click', () => {
+      const res = window._lastCalc;
+      if(!res){
+        alert('Bitte zuerst berechnen, dann Report herunterladen.');
+        return;
+      }
+      const now = new Date().toISOString();
+      let txt = `eco-rechner.de - Sparreport\nErstellt: ${now}\n\n`;
+      txt += `Jährlicher Verbrauch: ${res.totalKwh.toFixed(0)} kWh\n`;
+      txt += `Jährliche Kosten: € ${res.cost.toFixed(2)}\n\n`;
+      if(res.details && res.details.length){
+        txt += 'Geräte:\n';
+        res.details.forEach(d => {
+          txt += ` - ${d.name}: ${d.watt} W, ${d.hours} h/Tag → ${d.kwh.toFixed(1)} kWh/Jahr\n`;
+        });
+      }
+      txt += '\n(Dieser Report wurde lokal im Browser erstellt; es wurden keine Daten übertragen.)\n';
+      const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `eco-rechner-report-${(new Date()).toISOString().slice(0,10)}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   </script>
+
+  <footer>
+    <a href="/impressum.html">Impressum</a> | <a href="/datenschutz.html">Datenschutz</a>
+  </footer>
 </body>
 </html>
