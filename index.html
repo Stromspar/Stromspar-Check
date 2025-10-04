@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stromkosten-Rechner</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;max-width:750px;margin:30px auto;padding:0 12px;}
+    label{display:block;margin:8px 0;}
+    input{padding:6px;margin-left:6px;}
+    button{padding:8px 12px;margin-top:10px;cursor:pointer;}
+    .card{border:1px solid #ddd;padding:12px;border-radius:8px;margin-top:12px}
+  </style>
+</head>
+<body>
+  <h1>💡 Stromkosten-Rechner</h1>
+  <p>Berechne deine jährlichen Stromkosten und entdecke, wie viel du sparen kannst!</p>
+
+  <form id="calcForm" class="card">
+    <label>Monatlicher Stromverbrauch (kWh):
+      <input id="kwh" type="number" value="300" min="0" required>
+    </label>
+    <label>Preis pro kWh (€):
+      <input id="price" type="number" step="0.01" value="0.40" min="0" required>
+    </label>
+    <button type="submit">Berechnen</button>
+  </form>
+
+  <div id="result" class="card" style="display:none"></div>
+
+  <script>
+    function calcAnnualCost(monthlyKwh, pricePerKwh){
+      return monthlyKwh * 12 * pricePerKwh;
+    }
+    function estimateDeviceReplacementSavings(currentWatt, newWatt, hoursPerDay, pricePerKwh){
+      const days = 365;
+      const kwhOld = (currentWatt/1000) * hoursPerDay * days;
+      const kwhNew = (newWatt/1000) * hoursPerDay * days;
+      return (kwhOld - kwhNew) * pricePerKwh;
+    }
+
+    document.getElementById('calcForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const kwh = parseFloat(document.getElementById('kwh').value) || 0;
+      const price = parseFloat(document.getElementById('price').value) || 0;
+      const annual = calcAnnualCost(kwh, price);
+      const savingExample = estimateDeviceReplacementSavings(60, 8, 3, price);
+      const resultEl = document.getElementById('result');
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `
+        <h3>Ergebnis</h3>
+        <p>Deine jährlichen Stromkosten: <strong>€ ${annual.toFixed(2)}</strong></p>
+        <p>Beispiel: Eine 60W-Lampe, 3h/Tag → LED 8W: spart ca. <strong>€ ${savingExample.toFixed(2)}</strong>/Jahr.</p>
+        <p><a href="#" onclick="alert('Hier später Affiliate-Link zu LEDs einfügen')">👉 Jetzt energiesparende LEDs ansehen</a></p>
+      `;
+    });
+  </script>
+</body>
+</html>
