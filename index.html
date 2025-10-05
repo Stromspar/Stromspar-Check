@@ -181,7 +181,18 @@
       } else {
         res = computeFromDevices(price);
       }
-      showResult(res);
+      showResult(res);// Nach resultDiv.innerHTML = html;
+if (res.totalKwh) {
+  const durchschnitt = 2500; // Beispielwert
+  let vergleichText = '';
+  if (res.totalKwh > durchschnitt) {
+    vergleichText = `<p style="margin-top:10px; color:#d9534f;">Dein Verbrauch liegt über dem deutschen Durchschnitt (~${durchschnitt} kWh).</p>`;
+  } else {
+    vergleichText = `<p style="margin-top:10px; color:#5cb85c;">Du liegst unter dem Durchschnitt (~${durchschnitt} kWh) — top!</p>`;
+  }
+  resultDiv.innerHTML += vergleichText;
+}
+
     });
 
     function showResult(res){
@@ -246,5 +257,6 @@
   </footer>
 </body>
 </html>
+
 
 
