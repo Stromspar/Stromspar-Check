@@ -30,7 +30,13 @@
     header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 4px}
     .brand{display:flex;align-items:center;gap:12px}
     .logo{width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--accent-2),var(--accent));box-shadow:0 4px 12px rgba(0,0,0,0.06)}
-    .logo img{width:52px;height:52px;object-fit:contain;display:block}
+    .logo img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06));
+}
     .title{font-weight:700;font-size:20px;color:var(--accent);line-height:1}
     .slogan{font-size:13px;color:var(--muted);margin-top:4px}
     nav a{color:var(--accent);text-decoration:none;margin-left:12px;font-weight:600}
@@ -312,5 +318,6 @@
   </script>
 </body>
 </html>
+
 
 
