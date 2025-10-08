@@ -1,4 +1,4 @@
-<!-- /tools/wasserrechner.html -->
+<!-- /rechner/wasserrechner.html -->
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -16,12 +16,12 @@
 </head>
 <body>
   <header>
-    <a href="../index.html"><img src="../img/logo.svg" class="logo" alt="Eco-Rechner"></a>
+    <a href="../index.html"><img src="../img/logo.svg" class="logo" alt="Eco-Rechner" style="max-width:160px;"></a>
   </header>
 
   <main>
     <h1>🚿 Wasserverbrauchsrechner</h1>
-    <p>Finde heraus, wie viel Wasser und Energie du pro Tag und Jahr verbrauchst.</p>
+    <p>Berechne deinen jährlichen Wasserverbrauch und die Kosten.</p>
 
     <form id="wasserForm">
       <label>Verbrauchsart:
@@ -42,22 +42,23 @@
 
   <script>
     const verbrauchWerte = {
-      duschen: 9, // Liter/Minute
-      baden: 150, // Liter pro Nutzung
-      spuelen: 15, // pro Nutzung
+      duschen: 9,
+      baden: 150,
+      spuelen: 15,
       waschen: 50
     };
 
     document.getElementById("wasserForm").addEventListener("submit", e => {
       e.preventDefault();
-      const art = art.value;
-      const minuten = parseFloat(minuten.value);
-      const anzahl = parseInt(anzahl.value);
+      const art = document.getElementById("art").value;
+      const minuten = parseFloat(document.getElementById("minuten").value);
+      const anzahl = parseFloat(document.getElementById("anzahl").value);
 
       const literProNutzung = art === "baden" ? 150 : verbrauchWerte[art] * minuten;
       const literJahr = literProNutzung * anzahl * 52;
-      const kosten = literJahr * 0.002; // grob 2 €/m³
+      const kosten = literJahr * 0.002;
 
+      const ausgabe = document.getElementById("ausgabe");
       ausgabe.style.display = "block";
       ausgabe.innerHTML = `
         <p>💧 <b>Jährlicher Wasserverbrauch:</b> ${literJahr.toFixed(0)} Liter</p>
@@ -68,4 +69,3 @@
   </script>
 </body>
 </html>
-
