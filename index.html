@@ -1,97 +1,58 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Eco-Rechner — Nachhaltig rechnen. Bewusst sparen.</title>
-  <meta name="description" content="Eco-Rechner: Stromkosten & CO₂ online berechnen – datenschutzfreundlich. Nachhaltig rechnen. Bewusst sparen.">
+  <meta name="description" content="Eco-Rechner: Strom, Heizung, Solar & E-Auto kalkulieren — datenschutzfreundlich und lokal im Browser.">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg: #f4f8f5; /* hellgrün-beige */
-      --accent: #2f7a4a; /* natürliches grün dunkel */
-      --accent-2: #57a168; /* helleres grün */
-      --muted: #6b6b6b;
-      --card: #ffffff;
-      --radius: 12px;
-      --maxw: 980px;
+      --bg:#f4f8f5; --accent:#2f7a4a; --accent-2:#57a168; --muted:#6b6b6b; --card:#fff;
+      --radius:12px; --maxw:980px;
     }
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:var(--bg);
-      color:#0b2a1a;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.45;
-    }
-    .wrap{max-width:var(--maxw);margin:28px auto;padding:18px;}
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 4px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:64px;height:64px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--accent-2),var(--accent));box-shadow:0 4px 12px rgba(0,0,0,0.06)}
-    .logo img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06));
-}
-    .title{font-weight:700;font-size:20px;color:var(--accent);line-height:1}
-    .slogan{font-size:13px;color:var(--muted);margin-top:4px}
-    nav a{color:var(--accent);text-decoration:none;margin-left:12px;font-weight:600}
-    nav a:hover{text-decoration:underline}
-
-    main{display:grid;grid-template-columns:1fr 380px;gap:22px;margin-top:18px}
-    @media (max-width:920px){ main{grid-template-columns:1fr; padding-bottom:24px} .brand{gap:10px} .logo{width:52px;height:52px} }
-
-    /* card */
-    .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 6px 18px rgba(6,30,15,0.04);border:1px solid rgba(0,0,0,0.03)}
-    .muted{color:var(--muted);font-size:14px}
-
-    /* left: content */
-    .hero{padding:18px;border-radius:10px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#0b2a1a}
+    .wrap{max-width:var(--maxw);margin:28px auto;padding:18px}
+    header{display:flex;justify-content:space-between;align-items:center}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:60px;height:60px;border-radius:50%;background:linear-gradient(180deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center}
+    .logo img{width:44px;height:44px;object-fit:contain}
+    .title{font-weight:700;color:var(--accent);font-size:20px}
+    .slogan{font-size:13px;color:var(--muted)}
+    nav a{margin-left:14px;color:var(--accent);text-decoration:none;font-weight:600}
+    main{display:grid;grid-template-columns:1fr 360px;gap:22px;margin-top:18px}
+    @media(max-width:920px){main{grid-template-columns:1fr}}
+    .card{background:var(--card);padding:18px;border-radius:var(--radius);box-shadow:0 6px 18px rgba(6,30,15,0.04);border:1px solid rgba(0,0,0,0.03)}
     h1{margin:0;font-size:22px;color:#0b3f2a}
-    p.lead{margin:8px 0 14px;color:#2b4f3a}
-    .ctaRow{display:flex;gap:10px;align-items:center;margin-top:12px}
-    .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;border:0;font-weight:600;cursor:pointer;transition:transform .14s ease, box-shadow .14s ease}
-    .btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(47,122,74,0.18)}
-    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(47,122,74,0.12)}
-
-    /* right: calculator */
+    .lead{color:#2b4f3a;margin:8px 0 14px}
+    .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:0;font-weight:600;cursor:pointer;transition:.14s}
+    .btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(47,122,74,0.16)}
+    .ghost{background:transparent;color:var(--accent);border:1px solid rgba(47,122,74,0.12)}
+    /* calculator right area */
     .calcWrap{position:sticky;top:18px}
     label{display:block;font-weight:600;margin-top:8px;color:#14482f}
-    input[type=number], input[type=text], select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6efe8;background:#fbfdfb}
+    input, select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6efe8;background:#fbfdfb}
     .actions{display:flex;gap:8px;margin-top:12px}
     .result{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(87,161,104,0.06),rgba(47,122,74,0.03));border:1px solid rgba(47,122,74,0.08)}
-    .result h3{margin:0;font-size:16px;color:#0b3f2a}
     .bar{height:14px;background:#dfefe3;border-radius:999px;margin-top:10px;overflow:hidden}
-    .barInner{height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent));width:0%;transition:width .6s ease}
-    .small{font-size:13px;color:var(--muted);margin-top:8px}
-
-    /* footer */
-    footer{margin-top:26px;text-align:center;color:var(--muted);font-size:13px;padding:10px 0}
-
-    /* blog teaser */
-    .toolsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
-    @media (max-width:920px){.toolsGrid{grid-template-columns:1fr}}
-
+    .barInner{height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent));width:0%;transition:width .6s}
+    .toolsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+    @media(max-width:920px){.toolsGrid{grid-template-columns:repeat(1,1fr)}}
     .toolCard{padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,0.03);background:linear-gradient(180deg,#fff,#fbfff9)}
-    .toolCard h4{margin:0 0 8px 0;color:#234a35}
-
-    /* small anim */
-    .fadeIn{animation:fadeIn .45s ease both}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none}}
+    .toolCard h4{margin:0 0 8px;color:#234a35}
+    footer{margin-top:26px;text-align:center;color:var(--muted);font-size:13px;padding:10px 0}
+    .muted{color:var(--muted)}
+    /* blog teaser */
+    .blogTeaser{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .teaser{flex:1;min-width:260px;background:#fff;padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,0.03)}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="logo" title="Eco-Rechner">
-          <!-- Pfad zur Logo-Datei: assets/logo-eco-rechner.png -->
-          <img src="/assets/Logo-Eco-Rechner.png" alt="Eco-Rechner Logo" />
-        </div>
+        <div class="logo"><img src="/assets/logo-eco-rechner.png" alt="Eco-Rechner Logo"></div>
         <div>
           <div class="title">Eco-Rechner</div>
           <div class="slogan">Nachhaltig rechnen. Bewusst sparen.</div>
@@ -105,37 +66,57 @@
     </header>
 
     <main>
-      <!-- Content / Hero -->
-      <section class="card hero fadeIn">
-        <h1>Berechne Stromkosten & CO₂ – einfach, privat, schnell</h1>
-        <p class="lead">Gib deinen Jahresverbrauch ein oder füge Geräte hinzu. Alle Berechnungen laufen lokal in deinem Browser — keine Speicherung.</p>
+      <!-- left: hero + mini tools -->
+      <section class="card">
+        <h1>Berechne Stromkosten, CO₂ & mehr — privat und schnell</h1>
+        <p class="lead">Gib deinen Jahresverbrauch ein oder nutze eines der spezialisierten Tools. Alle Berechnungen laufen lokal in deinem Browser — keine Datenspeicherung.</p>
 
-        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
           <button class="btn" onclick="document.getElementById('annualKwh').focus()">Losrechnen</button>
-          <a class="btn ghost" href="/blog.html" style="text-decoration:none;display:inline-block">Mehr Spartipps im Blog</a>
+          <a class="btn ghost" href="/blog.html">Mehr Spartipps im Blog</a>
         </div>
 
-        <h3 style="margin-top:18px">Weitere Tools (in Planung)</h3>
+        <h3 style="margin-top:18px">Weitere Rechner</h3>
         <div class="toolsGrid">
-          <div class="toolCard"><h4>CO₂-Rechner</h4><p class="muted">Express: kWh → kg CO₂</p></div>
-          <div class="toolCard"><h4>Solarpotential</h4><p class="muted">Schnellabschätzung für dein Dach</p></div>
-          <div class="toolCard"><h4>Wasserverbrauch</h4><p class="muted">Einfache Haushaltsanalyse</p></div>
-          <div class="toolCard"><h4>Tarifrechner</h4><p class="muted">Schneller Blick, ob Wechsel lohnt</p></div>
+          <a class="toolCard" href="/rechner/solarrechner.html"><h4>☀️ Solar-Rechner</h4><p class="muted">Ertrag & Amortisation für Balkon/Dach (schnell)</p></a>
+          <a class="toolCard" href="/rechner/heizkosten.html"><h4>🔥 Heizkosten-Rechner</h4><p class="muted">Jährliche Heizkosten berechnen & Einsparpotenzial</p></a>
+          <a class="toolCard" href="/rechner/eauto.html"><h4>🚗 E-Auto Stromkosten</h4><p class="muted">Kostenvergleich E-Auto vs. Benziner</p></a>
+        </div>
+
+        <div style="margin-top:18px">
+          <h3>Warum Eco-Rechner?</h3>
+          <p class="muted">Tools, die wirklich helfen — kein Tracking, klare Tipps, konkrete Produkt-Empfehlungen (Affiliate, transparent).</p>
+        </div>
+
+        <div class="blogTeaser">
+          <div class="teaser">
+            <h4><a href="/blog/strom-sparen-tipps.html" style="color:#2f5d3a;text-decoration:none">10 Wege, Strom zu sparen</a></h4>
+            <p class="muted">Praktische Alltagstipps & empfohlene Produkte.</p>
+          </div>
+          <div class="teaser">
+            <h4><a href="/blog/mini-solar-anlagen.html" style="color:#2f5d3a;text-decoration:none">Mini-Solar & Balkonkraft</a></h4>
+            <p class="muted">Wann sich ein Balkon-Solarsystem lohnt.</p>
+          </div>
+          <div class="teaser">
+            <h4><a href="/blog/co2-fussabdruck.html" style="color:#2f5d3a;text-decoration:none">CO₂-Rechner & Tipps</a></h4>
+            <p class="muted">Wie du deinen CO₂-Fußabdruck senkst.</p>
+          </div>
         </div>
       </section>
 
-      <!-- Calculator Right -->
+      <!-- right: main calculator -->
       <aside class="calcWrap">
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div style="font-weight:700">Eco-Rechner</div>
-            <div class="small">Datenschutz-freundlich</div>
+            <div class="muted">Datenschutz-freundlich</div>
           </div>
 
           <label for="mode">Modus</label>
           <select id="mode" aria-label="Modus">
             <option value="annual">Jährlicher Verbrauch (kWh)</option>
-            <option value="devices">Geräte-Liste (Watt, Std/Tag)</option>
+            <option value="devices">Geräte-Modus (Watt, Std/Tag)</option>
+            <option value="simulateSolar">Mit Solar simulieren</option>
           </select>
 
           <div id="annualBlock" style="margin-top:10px;">
@@ -149,7 +130,13 @@
               <button id="addDeviceBtn" class="btn" type="button">+ Gerät</button>
             </div>
             <div id="devicesList" style="margin-top:8px"></div>
-            <div class="small">Watt / Std pro Tag eingeben — keine Speicherung</div>
+            <div class="muted">Watt / Std pro Tag eingeben — keine Speicherung</div>
+          </div>
+
+          <div id="solarSimBlock" style="display:none;margin-top:10px;">
+            <label for="solarKwp">Solar-Leistung (kWp) für Simulation</label>
+            <input id="solarKwp" type="number" step="0.1" value="0" min="0" />
+            <div class="muted">Gib kWp ein (z. B. 0.6 für Balkonkraftwerk)</div>
           </div>
 
           <label for="price">Preis pro kWh (€)</label>
@@ -161,28 +148,11 @@
           </div>
 
           <div id="result" class="result" style="display:none"></div>
-          <div class="small">Hinweis: Alle Berechnungen lokal im Browser. Keine Daten werden gesendet.</div>
+          <div class="muted" style="margin-top:10px">Alle Berechnungen lokal — keine Daten werden übertragen.</div>
         </div>
       </aside>
     </main>
 
-    <section style="background:#f9fdf9;padding:30px;border-top:1px solid #e3f0e5;margin-top:20px;border-radius:10px">
-  <h2 style="color:#2f5d3a;margin-top:0">Neu im Blog 🌿</h2>
-  <div style="display:flex;gap:20px;flex-wrap:wrap;">
-    <div style="flex:1;min-width:260px;padding:8px;">
-      <h3 style="margin:6px 0"><a href="/blog/stromkosten-sparen.html" style="color:#3d7d57;text-decoration:none">10 einfache Wege, Strom zu sparen</a></h3>
-      <p style="color:#556">Wie du mit kleinen Änderungen Energie & Kosten senkst – ohne Komfortverlust.</p>
-      <a href="/blog/stromkosten-sparen.html" style="color:#2f5d3a">Mehr lesen →</a>
-    </div>
-    <div style="flex:1;min-width:260px;padding:8px;">
-      <h3 style="margin:6px 0"><a href="/blog/mini-solar-anlagen.html" style="color:#3d7d57;text-decoration:none">Mini-Solaranlagen & Solar-Gadgets</a></h3>
-      <p style="color:#556">Wann sich Balkonkraftwerke & Powerbanks wirklich lohnen.</p>
-      <a href="/blog/mini-solar-anlagen.html" style="color:#2f5d3a">Mehr lesen →</a>
-    </div>
-  </div>
-</section>
-
-    
     <footer>
       <div style="max-width:700px;margin:0 auto" class="muted">
         <a href="/impressum.html">Impressum</a> | <a href="/datenschutz.html">Datenschutz</a> — &copy; <span id="year"></span> Eco-Rechner
@@ -191,133 +161,102 @@
   </div>
 
   <script>
-    // small utils
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    const modeEl = document.getElementById('mode');
-    const annualBlock = document.getElementById('annualBlock');
-    const devicesBlock = document.getElementById('devicesBlock');
-    const devicesList = document.getElementById('devicesList');
-    const addDeviceBtn = document.getElementById('addDeviceBtn');
-    const calcBtn = document.getElementById('calcBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const resultDiv = document.getElementById('result');
+    // DOM refs
+    const modeEl = document.getElementById('mode'), annualBlock = document.getElementById('annualBlock'),
+          devicesBlock = document.getElementById('devicesBlock'), solarSimBlock = document.getElementById('solarSimBlock'),
+          devicesList = document.getElementById('devicesList'), addDeviceBtn = document.getElementById('addDeviceBtn'),
+          calcBtn = document.getElementById('calcBtn'), downloadBtn = document.getElementById('downloadBtn'),
+          resultDiv = document.getElementById('result');
 
-    modeEl.addEventListener('change', () => {
-      if(modeEl.value === 'annual'){ annualBlock.style.display=''; devicesBlock.style.display='none'; }
-      else { annualBlock.style.display='none'; devicesBlock.style.display=''; }
-    });
+    modeEl.addEventListener('change', ()=>{ if(modeEl.value==='annual'){annualBlock.style.display=''; devicesBlock.style.display='none'; solarSimBlock.style.display='none'} else if(modeEl.value==='devices'){annualBlock.style.display='none'; devicesBlock.style.display=''; solarSimBlock.style.display='none'} else {annualBlock.style.display='none'; devicesBlock.style.display='none'; solarSimBlock.style.display=''} });
 
     function createDeviceRow(name='', watt=100, hours=1){
       const wrapper = document.createElement('div');
-      wrapper.style.display='grid';
-      wrapper.style.gridTemplateColumns='1fr 80px 80px 36px';
-      wrapper.style.gap='8px';
-      wrapper.style.marginTop='6px';
-
-      const nameInput = document.createElement('input'); nameInput.type='text'; nameInput.placeholder='z. B. Kühlschrank'; nameInput.value = name;
+      wrapper.style.display='grid'; wrapper.style.gridTemplateColumns='1fr 80px 80px 36px'; wrapper.style.gap='8px'; wrapper.style.marginTop='6px';
+      const nameInput = document.createElement('input'); nameInput.type='text'; nameInput.placeholder='z. B. Kühlschrank'; nameInput.value=name;
       const wattInput = document.createElement('input'); wattInput.type='number'; wattInput.min='0'; wattInput.value=watt;
       const hoursInput = document.createElement('input'); hoursInput.type='number'; hoursInput.step='0.1'; hoursInput.value=hours;
       const removeBtn = document.createElement('button'); removeBtn.type='button'; removeBtn.textContent='✕'; removeBtn.style.background='#ff6b6b'; removeBtn.style.border='none'; removeBtn.style.color='#fff'; removeBtn.style.borderRadius='8px'; removeBtn.addEventListener('click', ()=>wrapper.remove());
-
       wrapper.appendChild(nameInput); wrapper.appendChild(wattInput); wrapper.appendChild(hoursInput); wrapper.appendChild(removeBtn);
       devicesList.appendChild(wrapper);
     }
-
-    addDeviceBtn && addDeviceBtn.addEventListener('click', ()=>createDeviceRow('Neues Gerät', 100, 1));
-    // add a couple of examples
+    addDeviceBtn && addDeviceBtn.addEventListener('click', ()=>createDeviceRow('Neues Gerät',100,1));
+    // examples
     createDeviceRow('60W Lampe',60,3); createDeviceRow('PC (Last)',200,5);
 
     function computeFromDevices(price){
-      const rows = Array.from(devicesList.children);
-      let totalKwh = 0; const details = [];
-      rows.forEach(row=>{
-        const name = row.children[0].value || 'Gerät';
-        const watt = parseFloat(row.children[1].value)||0;
-        const hours = parseFloat(row.children[2].value)||0;
-        const kwh = (watt/1000) * hours * 365;
-        totalKwh += kwh;
-        details.push({name,watt,hours,kwh});
-      });
-      const cost = totalKwh * price;
-      return {totalKwh,cost,details};
+      const rows = Array.from(devicesList.children); let totalKwh = 0; const details=[];
+      rows.forEach(row=>{ const name=row.children[0].value||'Gerät'; const watt=parseFloat(row.children[1].value)||0; const hours=parseFloat(row.children[2].value)||0; const kwh=(watt/1000)*hours*365; totalKwh += kwh; details.push({name,watt,hours,kwh}); });
+      const cost = totalKwh * price; return {totalKwh,cost,details};
     }
-
-    function computeFromAnnual(annualKwh, price){
+    function computeFromAnnual(annualKwh, price, solarKwp=0){
       const totalKwh = parseFloat(annualKwh)||0;
-      const cost = totalKwh * price;
-      return {totalKwh,cost,details:[]};
+      // simulate solar: assume 1000 kWh/kWp/year scaled by efficiency ~0.9 for balcony
+      const solarProd = parseFloat(solarKwp)||0; const solarKwh = solarProd * 900; // conservative
+      const netKwh = Math.max(0, totalKwh - solarKwh);
+      const cost = netKwh * price;
+      return {totalKwh, cost, solarKwh, netKwh, details:[]};
     }
-
-    function co2FromKwh(kwh){
-      const factor = 0.4; // kg CO2 per kWh (approx.)
-      return kwh * factor;
-    }
+    function co2FromKwh(kwh){ return kwh * 0.4; }
 
     function showResult(res){
       resultDiv.style.display='block';
-      const euro = v => '€ '+v.toFixed(2);
-      let html = `<h3>Ergebnis</h3>`;
+      const euro = v=>'€ '+v.toFixed(2);
+      let html = '<h3>Ergebnis</h3>';
       html += `<p>Jährlicher Verbrauch: <strong>${res.totalKwh.toFixed(0)} kWh</strong></p>`;
-      html += `<p>Jährliche Stromkosten: <strong>${euro(res.cost)}</strong></p>`;
-      const co2 = co2FromKwh(res.totalKwh);
-      html += `<p>Geschätzter CO₂-Ausstoß: <strong>${co2.toFixed(1)} kg</strong></p>`;
-
-      // benchmark
-      const avg = 2500;
-      if(res.totalKwh > avg){
-        html += `<p style="color:#b33">Dein Verbrauch liegt über dem deutschen Durchschnitt (~${avg} kWh).</p>`;
-      } else {
-        html += `<p style="color:#1a7a3b">Du liegst unter dem Durchschnitt (~${avg} kWh) — gut gemacht!</p>`;
+      if(res.solarKwh!==undefined){
+        html += `<p>Solarproduktion (geschätzt): <strong>${res.solarKwh.toFixed(0)} kWh</strong></p>`;
+        html += `<p>Netto aus Netz: <strong>${res.netKwh.toFixed(0)} kWh</strong></p>`;
       }
+      html += `<p>Jährliche Stromkosten (Netto): <strong>${euro(res.cost)}</strong></p>`;
+      html += `<p>Geschätzter CO₂-Ausstoß: <strong>${co2FromKwh(res.totalKwh).toFixed(1)} kg</strong></p>`;
+
+      const avg=2500;
+      if(res.totalKwh>avg) html += `<p style="color:#b33">Dein Verbrauch liegt über dem deutschen Durchschnitt (~${avg} kWh).</p>`; else html += `<p style="color:#1a7a3b">Du liegst unter dem Durchschnitt (~${avg} kWh) — gut gemacht!</p>`;
 
       // bar
-      const pct = Math.min(100, (res.totalKwh/6000)*100);
+      const pct=Math.min(100,(res.totalKwh/6000)*100);
       html += `<div class="bar"><div class="barInner" style="width:${pct}%;"></div></div>`;
 
-      // details
       if(res.details && res.details.length){
-        html += `<h4 style="margin-top:12px">Geräte-Aufschlüsselung</h4><table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left;padding:6px">Gerät</th><th style="padding:6px">Watt</th><th style="padding:6px">Std/Tag</th><th style="padding:6px">kWh/Jahr</th></tr></thead><tbody>`;
-        res.details.forEach(d=>{
-          html += `<tr><td style="padding:6px">${escapeHtml(d.name)}</td><td style="padding:6px">${d.watt}</td><td style="padding:6px">${d.hours}</td><td style="padding:6px">${d.kwh.toFixed(1)}</td></tr>`;
-        });
+        html += `<h4 style="margin-top:12px">Geräte-Aufschlüsselung</h4><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:6px;text-align:left">Gerät</th><th style="padding:6px">Watt</th><th style="padding:6px">Std/Tag</th><th style="padding:6px">kWh/Jahr</th></tr></thead><tbody>`;
+        res.details.forEach(d=> html += `<tr><td style="padding:6px">${escapeHtml(d.name)}</td><td style="padding:6px">${d.watt}</td><td style="padding:6px">${d.hours}</td><td style="padding:6px">${d.kwh.toFixed(1)}</td></tr>`);
         html += `</tbody></table>`;
       }
 
-      resultDiv.innerHTML = html;
-      window._lastCalc = res;
-      // animate bar
-      const inner = document.querySelector('.barInner');
-      if(inner){ inner.style.width = pct + '%'; }
+      resultDiv.innerHTML = html; window._lastCalc = res;
+      const inner=document.querySelector('.barInner'); if(inner) inner.style.width = pct + '%';
     }
 
     calcBtn.addEventListener('click', ()=>{
       const price = parseFloat(document.getElementById('price').value) || 0;
       let res;
-      if(modeEl.value === 'annual'){
-        res = computeFromAnnual(document.getElementById('annualKwh').value, price);
-      } else {
+      if(modeEl.value==='annual'){
+        const k = document.getElementById('annualKwh').value;
+        const solarKwp = parseFloat(document.getElementById('solarKwp')?.value || 0);
+        res = computeFromAnnual(k, price, solarKwp);
+      } else if(modeEl.value==='devices'){
         res = computeFromDevices(price);
+      } else { // simulateSolar
+        const k = document.getElementById('annualKwh').value;
+        const solarKwp = parseFloat(document.getElementById('solarKwp')?.value || 0);
+        res = computeFromAnnual(k, price, solarKwp);
       }
       showResult(res);
     });
 
     downloadBtn.addEventListener('click', ()=>{
-      const res = window._lastCalc;
-      if(!res){ alert('Bitte zuerst berechnen.'); return; }
-      const now = new Date().toISOString();
-      let txt = `Eco-Rechner Report\nErstellt: ${now}\n\nJährlicher Verbrauch: ${res.totalKwh.toFixed(0)} kWh\nJährliche Kosten: € ${res.cost.toFixed(2)}\nCO2: ${co2FromKwh(res.totalKwh).toFixed(1)} kg\n\n`;
-      if(res.details && res.details.length){ txt += 'Geräte:\n'; res.details.forEach(d => { txt += ` - ${d.name}: ${d.watt}W, ${d.hours}h/Tag -> ${d.kwh.toFixed(1)} kWh/Jahr\n`; }); }
+      const res = window._lastCalc; if(!res){alert('Bitte zuerst berechnen.'); return;}
+      const now=new Date().toISOString(); let txt = `Eco-Rechner Report\nErstellt: ${now}\n\nJährlicher Verbrauch: ${res.totalKwh.toFixed(0)} kWh\nJährliche Kosten: € ${res.cost.toFixed(2)}\nCO2: ${co2FromKwh(res.totalKwh).toFixed(1)} kg\n\n`;
+      if(res.solarKwh) txt += `Solarproduktion: ${res.solarKwh.toFixed(0)} kWh\nNetto aus Netz: ${res.netKwh.toFixed(0)} kWh\n\n`;
+      if(res.details && res.details.length){ txt += 'Geräte:\n'; res.details.forEach(d=>{ txt += ` - ${d.name}: ${d.watt}W, ${d.hours}h/Tag -> ${d.kwh.toFixed(1)} kWh/Jahr\n`; }); }
       txt += '\n(Dieser Report wurde lokal erstellt; keine Daten wurden übertragen.)\n';
-      const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = `eco-rechner-report-${(new Date()).toISOString().slice(0,10)}.txt`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      const blob=new Blob([txt], {type:'text/plain;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`eco-rechner-report-${(new Date()).toISOString().slice(0,10)}.txt`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     });
 
     function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   </script>
 </body>
 </html>
-
-
-
