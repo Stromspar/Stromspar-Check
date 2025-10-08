@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="de"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Heizkosten-Rechner – Eco-Rechner</title>
+<meta name="description" content="Heizkosten Rechner: Jahreskosten berechnen und sparsames Heizen planen.">
+<style>body{font-family:Inter,Arial;background:#f4f8f5;margin:0;color:#0b2a1a}.wrap{max-width:900px;margin:28px auto;padding:18px}.card{background:#fff;padding:18px;border-radius:12px;border:1px solid rgba(0,0,0,0.03)}label{display:block;margin-top:8px;font-weight:700;color:#14482f}input{width:100%;padding:10px;border-radius:8px;border:1px solid #e6efe8;background:#fbfdfb}.btn{background:#2f7a4a;color:#fff;padding:10px;border-radius:8px;border:0}.result{margin-top:12px;padding:12px;border-radius:10px;background:#f9faf9;border:1px solid #e3f0e5}</style>
+</head><body>
+<div class="wrap">
+  <a href="/"><button class="btn">← Zurück</button></a>
+  <h1>Heizkosten-Rechner</h1>
+  <div class="card">
+    <label for="qm">Wohnfläche (m²)</label><input id="qm" type="number" value="80"/>
+    <label for="verbrauchWh">Jährlicher Verbrauch (kWh)</label><input id="verbrauchWh" type="number" value="12000"/>
+    <label for="preiskWh">Preis pro kWh (€)</label><input id="preiskWh" type="number" step="0.01" value="0.09"/>
+    <div style="margin-top:10px"><button id="calc" class="btn">Berechnen</button></div>
+    <div id="out" class="result" style="display:none"></div>
+  </div>
+</div>
+<script>
+document.getElementById('calc').addEventListener('click',()=>{
+  const verb = parseFloat(document.getElementById('verbrauchWh').value)||0;
+  const preis = parseFloat(document.getElementById('preiskWh').value)||0;
+  const kosten = verb * preis;
+  const out = document.getElementById('out');
+  out.style.display='block';
+  out.innerHTML = `<p>Geschätzte Jahres­heizkosten: <strong>€ ${kosten.toFixed(2)}</strong></p><p class="muted">Tipp: Reduzieren Sie den Verbrauch durch Dämmung, Thermostate und Zeitschaltuhren.</p>`;
+});
+</script>
+</body></html>
