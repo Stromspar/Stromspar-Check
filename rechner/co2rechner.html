@@ -1,4 +1,4 @@
-<!-- /tools/co2rechner.html -->
+<!-- /rechner/co2rechner.html -->
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -16,12 +16,12 @@
 </head>
 <body>
   <header>
-    <a href="../index.html"><img src="../img/logo.svg" class="logo" alt="Eco-Rechner"></a>
+    <a href="../index.html"><img src="../img/logo.svg" class="logo" alt="Eco-Rechner" style="max-width:160px;"></a>
   </header>
 
   <main>
     <h1>🌿 CO₂-Fußabdruck-Rechner</h1>
-    <p>Berechne, wie viel CO₂ dein Lebensstil pro Jahr verursacht – und wo du sparen kannst!</p>
+    <p>Berechne deinen jährlichen CO₂-Ausstoß basierend auf deinem Lebensstil.</p>
 
     <form id="co2Form">
       <h3>🏠 Wohnen</h3>
@@ -58,22 +58,22 @@
 
     document.getElementById("co2Form").addEventListener("submit", e => {
       e.preventDefault();
-      const strom = strom.value * 0.366 / 1000; // kg/kWh
-      const heizung = heizung.value * 0.25 / 1000;
-      const auto = auto.value * 0.171; // kg/km
-      const flug = flug.value * 250; // kg/h
-      const essen = essenFaktoren[essen.value] * 365;
+      const strom = parseFloat(document.getElementById("strom").value) * 0.366;
+      const heizung = parseFloat(document.getElementById("heizung").value) * 0.25;
+      const auto = parseFloat(document.getElementById("auto").value) * 0.171;
+      const flug = parseFloat(document.getElementById("flug").value) * 250;
+      const essen = essenFaktoren[document.getElementById("essen").value] * 365;
 
       const summe = strom + heizung + auto + flug + essen;
 
+      const co2out = document.getElementById("co2out");
       co2out.style.display = "block";
       co2out.innerHTML = `
         <p>🌍 <b>Dein jährlicher CO₂-Ausstoß:</b> ${summe.toFixed(1)} kg</p>
         <p>Das entspricht ${(summe/1000).toFixed(2)} Tonnen CO₂ pro Jahr.</p>
-        <p>💡 Tipp: <i>Ein durchschnittlicher Deutscher liegt bei etwa 8–9 Tonnen.</i></p>
+        <p>💡 Tipp: Ein durchschnittlicher Deutscher liegt bei etwa 8–9 Tonnen.</p>
       `;
     });
   </script>
 </body>
 </html>
-
