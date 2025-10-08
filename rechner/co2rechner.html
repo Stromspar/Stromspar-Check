@@ -1,1 +1,79 @@
+<!-- /tools/co2rechner.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CO₂-Fußabdruck-Rechner | Eco-Rechner</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    main { max-width: 900px; margin: 3rem auto; background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+    input, select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 8px; }
+    button { background: #2E7D32; color: #fff; border: none; border-radius: 8px; padding: 10px 18px; cursor: pointer; margin-top: 10px; }
+    button:hover { background: #388E3C; }
+    .result { background: #F1F8E9; padding: 16px; border-radius: 8px; margin-top: 1rem; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="../index.html"><img src="../img/logo.svg" class="logo" alt="Eco-Rechner"></a>
+  </header>
+
+  <main>
+    <h1>🌿 CO₂-Fußabdruck-Rechner</h1>
+    <p>Berechne, wie viel CO₂ dein Lebensstil pro Jahr verursacht – und wo du sparen kannst!</p>
+
+    <form id="co2Form">
+      <h3>🏠 Wohnen</h3>
+      <label>Stromverbrauch (kWh/Jahr): <input type="number" id="strom" value="2500"></label><br><br>
+      <label>Heizung (kWh/Jahr): <input type="number" id="heizung" value="8000"></label><br><br>
+
+      <h3>🚗 Verkehr</h3>
+      <label>Autokilometer pro Jahr: <input type="number" id="auto" value="12000"></label><br><br>
+      <label>Flugstunden pro Jahr: <input type="number" id="flug" value="10"></label><br><br>
+
+      <h3>🍽️ Ernährung</h3>
+      <label>Ernährungsstil:
+        <select id="essen">
+          <option value="vegan">Vegan</option>
+          <option value="vegetarisch">Vegetarisch</option>
+          <option value="mischkost" selected>Mischkost</option>
+          <option value="fleischreich">Fleischreich</option>
+        </select>
+      </label><br><br>
+
+      <button type="submit">Berechnen</button>
+    </form>
+
+    <div id="co2out" class="result" style="display:none;"></div>
+  </main>
+
+  <script>
+    const essenFaktoren = {
+      vegan: 1.5,
+      vegetarisch: 1.8,
+      mischkost: 2.3,
+      fleischreich: 3.3
+    };
+
+    document.getElementById("co2Form").addEventListener("submit", e => {
+      e.preventDefault();
+      const strom = strom.value * 0.366 / 1000; // kg/kWh
+      const heizung = heizung.value * 0.25 / 1000;
+      const auto = auto.value * 0.171; // kg/km
+      const flug = flug.value * 250; // kg/h
+      const essen = essenFaktoren[essen.value] * 365;
+
+      const summe = strom + heizung + auto + flug + essen;
+
+      co2out.style.display = "block";
+      co2out.innerHTML = `
+        <p>🌍 <b>Dein jährlicher CO₂-Ausstoß:</b> ${summe.toFixed(1)} kg</p>
+        <p>Das entspricht ${(summe/1000).toFixed(2)} Tonnen CO₂ pro Jahr.</p>
+        <p>💡 Tipp: <i>Ein durchschnittlicher Deutscher liegt bei etwa 8–9 Tonnen.</i></p>
+      `;
+    });
+  </script>
+</body>
+</html>
 
